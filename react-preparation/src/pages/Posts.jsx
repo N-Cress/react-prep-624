@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const Posts = () => {
@@ -10,10 +10,10 @@ const Posts = () => {
   const n = 10;
 
   async function fetchPosts(userId) {
+    setLoaded(false)
     const { data } = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${userId || id}`)
     setPosts(data)
     setLoaded(true)
-    console.log(data)
   }
 
   function onSearch() {
@@ -30,7 +30,9 @@ const Posts = () => {
     <> 
       <div>
         <div className="post__search">
-          <button>← Back</button>
+          <Link to="/">
+            <button>← Back</button>
+          </Link>
           <div className="post__search--container">
             <label className="post__search--label">Search by Id</label>
             <input
