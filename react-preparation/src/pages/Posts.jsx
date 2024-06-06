@@ -6,23 +6,25 @@ const Posts = () => {
   const { id } = useParams();
   const [posts, setPosts] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [input, setInput] = useState(id);
   const n = 10;
 
-  useEffect(() => {
-    async function fetchPosts() {
-      function timeout(delay) {
-        return new Promise( res => setTimeout(res, delay) );
-      }
-    await timeout(1000)
-      const { data } = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${id}`)
-      setPosts(data)
-      setLoaded(true)
-      console.log(data)
-    }
-    fetchPosts();
-  }, [id]);
+  async function fetchPosts(userId) {
+    const { data } = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${userId || id}`)
+    setPosts(data)
+    setLoaded(true)
+    console.log(data)
+  }
 
-   
+  function onSearch() {
+    fetchPosts(input)
+  }
+
+  useEffect(() => {
+    
+    fetchPosts();
+  }, []);
+
 
   return (
     <> 
@@ -33,8 +35,11 @@ const Posts = () => {
             <label className="post__search--label">Search by Id</label>
             <input
               type="number"
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              onKeyDown={(event) => event.key === 'Enter' && onSearch()}
             />
-            <button>Enter</button>
+            <button  onClick={() => onSearch()}>Enter</button>
           </div>
         </div>
         {loaded ? posts.map((post) => (
